@@ -1,14 +1,15 @@
 from myAuth.encryp import createSalt
 from django.db import models
 from django.contrib.auth.models import User
+import jwt
+from myAuth.config import my_secretKey
 
 
 class myUser(models.Model):
     user = models.OneToOneField(User, models.CASCADE)
     salt = models.TextField()
-    authorization = models.TextField() # portal-web鉴权码 放header
-    code = models.TextField() # portal-web授权码 放url参数
-
+    authorization = models.TextField()  # portal-web鉴权码 放header
+    code = models.TextField()  # portal-web授权码 放url参数
 
     # def __init__(self, username, password):
     #     self.username = username
@@ -31,7 +32,12 @@ class myUser(models.Model):
     @staticmethod
     def generateAUTHORIZATION(username, rest, web):
         code = createSalt()
-        authorization = f"portal.{rest}.{web}.{username}"
+        data = {'username': username,
+                'portal_rest': rest,
+                'portal_web': web
+                }
+        authorization = jwt.encode(data, my_secretKey, algorithm='HS256')
+
         user = myUser.objects.get(user__username=username)
         user.authorization = authorization
         user.code = code
@@ -80,4 +86,3 @@ class myUser(models.Model):
     #
     # def __str__(self):
     #     return f'id:{self.id}--name:{self.username}'  # 注此处的是点不是逗号
-

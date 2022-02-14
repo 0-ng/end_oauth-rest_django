@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from myAuth.views import *
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('login/', login),
-    path('portalLogin/', portalLogin),
-    path('getEnv/', getEnv)
+    # path('', hello),
+    path('login', login),
+    path('portalLogin', portalLogin),
+    path('getEnv', getEnv)
 ]

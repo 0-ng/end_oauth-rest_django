@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include, re_path
+from django.conf.urls import include, re_path, url
 from tyadmin_api.views import AdminIndexView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('myAuth.urls')),
     re_path('^xadmin/.*', AdminIndexView.as_view()),
     path('api/xadmin/v1/', include('tyadmin_api.urls')),
-]
+] + static(settings.STATIC_URL,document_root = settings.STATIC_ROOT)

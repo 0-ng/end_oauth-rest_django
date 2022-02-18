@@ -3,3 +3,4 @@ uwsgi
 pyjwt
 tyadmin-api-cli
 django_filter
+mysqlclient

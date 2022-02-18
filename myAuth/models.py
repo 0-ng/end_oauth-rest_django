@@ -7,9 +7,9 @@ from myAuth.config import my_secretKey
 
 class myUser(models.Model):
     user = models.OneToOneField(User, models.CASCADE)
-    salt = models.TextField()
-    authorization = models.TextField()  # portal-web鉴权码 放header
-    code = models.TextField()  # portal-web授权码 放url参数
+    salt = models.TextField(blank=True)
+    authorization = models.TextField(blank=True)  # portal-web鉴权码 放header
+    code = models.TextField(blank=True)  # portal-web授权码 放url参数
 
     # def __init__(self, username, password):
     #     self.username = username

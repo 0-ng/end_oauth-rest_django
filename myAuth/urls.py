@@ -20,5 +20,6 @@ urlpatterns = [
     # path('', hello),
     path('login', login),
     path('portalLogin', portalLogin),
-    path('getEnv', getEnv)
+    path('getEnv', getEnv),
+    path('api_isSuperUser', api_isSuperUser)
 ]

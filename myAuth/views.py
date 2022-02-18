@@ -26,7 +26,7 @@ def login(request):
 
     try:
         # 存在用户判断密码是否正确
-        myUser.objects.get(user__username=username)
+        User.objects.get(username=username)
         print("?")
         user = auth.authenticate(username=username, password=password)
         print(user)
@@ -78,6 +78,7 @@ def createUser(username, password):
     user = User.objects.create_user(username=username, password=password)
     my_user = myUser(user=user)
     my_user.save()
+    print("create myuser", username, password)
     code = "0"
     msg = "create succeeded"
     resp = {"code": code, "msg": msg}
@@ -101,17 +102,15 @@ def getEnv(request):
         resp = jsonify(code=-1, data={"msg": "env error"})
         return resp
     respEnv = {
-        "portal_rest": 'B',
-        "portal_web": 'B',
-        # "redirectUrl": "http://portal-web-a/"
-        "redirectUrl": "http://127.0.0.1:8002/"
+        "portal_rest": 'A',
+        "portal_web": 'A',
+        "redirectUrl": "http://127.0.0.1:8001/"
     }
-    if username != "admin":
+    if isSuperUser(username):
         respEnv = {
-            "portal_rest": 'A',
-            "portal_web": 'A',
-            # "redirectUrl": "http://portal-web-a/"
-            "redirectUrl": "http://127.0.0.1:8001/"
+            "portal_rest": 'B',
+            "portal_web": 'B',
+            "redirectUrl": "http://127.0.0.1:8002/"
         }
     code = myUser.generateAUTHORIZATION(username, respEnv["portal_rest"], respEnv["portal_web"])
     resp = jsonify(code=0, data={"env": respEnv, "code": code})
@@ -154,6 +153,20 @@ def getAllUserInfos(request):
     resp = jsonify(code=code, msg=msg)
     return resp
 
+
+def api_isSuperUser(request):
+    username = request.GET["username"]
+    ret = isSuperUser(username)
+    return jsonify(superUser=ret)
+
+
+def isSuperUser(username):
+    try:
+        user = User.objects.get(username=username)
+        ret = user.is_superuser
+    except:
+        ret = False
+    return ret
 
 def equal(b: bytes):
     """用来补齐被JWT去掉的等号"""
